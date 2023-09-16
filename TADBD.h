@@ -46,7 +46,7 @@ union valorTab
 struct tpCamposTab
 {
 	char Campo[20],Tipo,PK;
-	struct tpCamposTab FK,*prox;
+	struct tpCamposTab *FK,*prox;
 	union valorTab no;	 	
 };
 typedef struct tpCamposTab tpCampos;
@@ -69,8 +69,14 @@ struct tpBanco
 	char bdName[20];
 	tpTabela *tabs;
 };
-typedef struct tpBando tpBD;
-
+typedef struct tpBanco tpBD;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modularização
+
+void iniciarBanco(tpBD **BD,char nome[20])
+{
+	*BD = (tpBD*) malloc(sizeof(tpBD));
+	strcpy((*BD)->bdName,nome);
+	(*BD)->tabs = NULL;
+}
