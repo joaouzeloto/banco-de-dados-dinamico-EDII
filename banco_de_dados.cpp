@@ -5,8 +5,13 @@
 
 int main()
 {
+	int i;
 	tpBD *banco;
 	iniciarBanco(&banco,"bancoProj");
 	printf("\nNome do banco: %s",banco->bdName);
-	
+	criarTabela(&banco,"Cliente");
+	criarTabela(&banco,"Veiculos");	
+	printf("\nTABELA: %s",banco->tabs->tabName);
+	criarCampos(&banco,"id_cliente INTEGER NOT NULL","Cliente");
+	printf("\nCampo: %s Tipo: %c",banco->tabs->campos->Campo,banco->tabs->campos->Tipo);
 }
