@@ -1,39 +1,6 @@
-//Criando as structs 
-/*struct intTab
-{
-	int num;
-	struct intTab *prox;	
-};
-typedef struct intTab intT;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//	ESTRUTURAS
 
-struct floatTab
-{
-	float num;	
-	struct floatTab *prox;
-};
-typedef struct floatTab floatT;
-
-struct svalorDT
-{
-	char dat[10];
-	struct svalorDT *prox;	
-};
-typedef struct svalorDT valorDT;
-
-struct svalorT
-{
-	char str[20];
-	struct svalorT *prox;	
-};
-typedef struct svalorT valorT;
-
-struct svalorC
-{
-	char letra;
-	struct svalorC *prox;	
-};
-typedef struct svalorC valorC;
-*/
 union valorTab;
 
 struct listCampos 
@@ -121,14 +88,18 @@ void criarCaixaCamp(char str[],tpCampos **camp)
 	aux[j] = '\0';
 	if(strcmp(aux,"INTERGER")==0)
 		(*camp)->Tipo ='I';
-	if(strcmp(aux,"CHARACTER(20)")==0)
-		(*camp)->Tipo ='T';
-	if(strcmp(aux,"DATE")==0)
-		(*camp)->Tipo ='D';
-	if(strcmp(aux,"NUMERIC")==0)
-		(*camp)->Tipo ='N';
-	if(strcmp(aux,"CHARACTER(1)")==0)
-		(*camp)->Tipo ='C';
+	else
+		if(strcmp(aux,"CHARACTER(20)")==0)
+			(*camp)->Tipo ='T';
+		else
+			if(strcmp(aux,"DATE")==0)
+				(*camp)->Tipo ='D';
+			else
+				if(strcmp(aux,"NUMERIC")==0)
+					(*camp)->Tipo ='N';
+				else
+					if(strcmp(aux,"CHARACTER(1)")==0)
+						(*camp)->Tipo ='C';
 	(*camp)->PK ='N';
 	(*camp)->FK = NULL;
 	(*camp)->no= NULL;
@@ -150,9 +121,34 @@ void criarCampos(tpBD **BD,char str[],char nomeT[20])
 		else
 		{
 			auxCamp = aux->campos;
-			while(auxCamp!=NULL)
+			while(auxCamp->prox!=NULL)
 				auxCamp = auxCamp->prox;
 			auxCamp->prox = novo;
 		}
+	}
+}
+
+void adicionaPK(tpBD **BD,char str[],char nomeT[20])
+{
+	int i=0,j;
+	char campo[20];
+	tpTabela *aux = (*BD)->tabs;
+	tpCampos *auxCamp;
+	while(strcmp(aux->tabName,nomeT)!=0)
+		aux = aux->prox;
+	if(aux!=NULL)
+	{
+		while(str[i]!='(')
+			i++;
+		i++;
+		for(j=0;str[i]!=')';i++,j++)
+			campo[j] = str[i];
+		i++;
+		campo[j]='\0';
+		auxCamp = aux->campos;
+		while(auxCamp->prox!=NULL&&strcmp(auxCamp->Campo,campo)!=0)
+			auxCamp = auxCamp->prox;
+		if(auxCamp!=NULL)
+			auxCamp->PK = 'S';
 	}
 }
