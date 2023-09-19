@@ -46,18 +46,26 @@ typedef struct tpBanco tpBD;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modularização
 
-void iniciarBanco(tpBD **BD,char nome[])
+void iniciarBanco(tpBD **BD,char str[])
 {
 	*BD = (tpBD*) malloc(sizeof(tpBD));
-	strcpy((*BD)->bdName,nome);
+	int i=0,j;
+	char bd[20];
+	for(j=0;j<2;i++)
+		if(str[i]==' ')
+			j++;
+	for(j=0;str[i]!=';';i++,j++)
+		bd[j] = str[i];
+	bd[j] = '\0';
+	strcpy((*BD)->bdName,bd);
 	(*BD)->tabs = NULL;
 }
 
-void criarTabela(tpBD **BD,char nome[])
+void criarTabela(tpBD **BD,char tab[])
 {
 	
 	tpTabela *nova = (tpTabela*) malloc(sizeof(tpTabela)),*aux;
-	strcpy(nova->tabName,nome);
+	strcpy(nova->tabName,tab);
 	nova->prox = NULL;
 	nova->campos = NULL;
 	if((*BD)->tabs==NULL)
@@ -150,5 +158,56 @@ void adicionaPK(tpBD **BD,char str[],char nomeT[20])
 			auxCamp = auxCamp->prox;
 		if(auxCamp!=NULL)
 			auxCamp->PK = 'S';
+	}
+}
+
+void adicionaFK(tpBD **BD,char str[])
+{
+	int i=0,j;
+	tpTabela *ende,*ori,*aux=(*BD)->tabs; 
+	tpCampos *auxCamp,*auxAcha;
+	char tab[20],fk[20],tabO[20];
+	for(j=0;j<2;i++)
+		if(str[i]==' ')
+			j++;
+	for(j=0;str[i]!=' ';i++,j++)
+		tab[j] = str[i];
+	tab[j]='\0';
+	for(;str[i]!='(';)
+		i++;
+	i++;
+	for(j=0;str[i]!=')';i++,j++)
+		fk[j] = str[i];
+	fk[j]='\0';
+	for(j=0;j<2;i++)
+		if(str[i]==' ')
+			j++;
+	for(j=0;str[i]!=' ';i++,j++)
+		tabO[j] = str[i];
+	tabO[j]='\0';
+	while(aux!=NULL&&strcmp(aux->tabName,tab)!=0)
+		aux = aux->prox;
+	if(aux!=NULL)
+	{
+		ende = aux;
+		aux=(*BD)->tabs;
+		while(aux!=NULL&&strcmp(aux->tabName,tabO)!=0)
+			aux = aux->prox;
+		if(aux!=NULL)
+		{
+			ori = aux;
+			auxCamp = ori->campos;
+			while(auxCamp!=NULL&&strcmp(auxCamp->Campo,fk)!=0)
+				auxCamp = auxCamp->prox;
+		
+			if(auxCamp!=NULL)
+			{
+				auxAcha = ende->campos;
+				while(auxAcha!=NULL&&strcmp(auxAcha->Campo,fk)!=0)
+					auxAcha = auxCamp->prox;
+				if(auxAcha!=NULL)
+					auxAcha->FK = auxCamp;
+			}	
+		}
 	}
 }
