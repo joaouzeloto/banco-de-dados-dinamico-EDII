@@ -43,21 +43,91 @@ struct tpBanco
 };
 typedef struct tpBanco tpBD;
 
+struct tpAuxiliar
+{
+	char palavra[20];
+	struct tpAuxiliar *prox;
+};
+typedef struct tpAuxiliar tpAux;
+
+struct descAux
+{
+	tpAux *inicio,*final;
+};
+typedef struct descAux dAux;
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modularização
 
+void inicializa(dAux **D)
+{
+	(*D)->inicio = (*D)->final = NULL;
+}
+
+void inserePalavra(dAux **aux,char palavra[])
+{
+	tpAux *novo = (tpAux*) malloc(sizeof(tpAux));
+	strcpy(novo->palavra,palavra);
+	if((*aux)->inicio==NULL)
+	{
+		novo->prox = NULL;
+		(*aux)->inicio = (*aux)->final =novo;
+	}
+	else
+	{
+		novo->prox = (*aux)->final;
+		(*aux)->final = novo;
+	}
+}
+
+void excluirDesc(dAux **D)
+{
+	tpAux *garbage,*aux = (*D)->inicio;
+	while(aux!=NULL)
+	{
+		garbage = aux;
+		aux = aux->prox;
+		free(garbage);
+	}
+	inicializa(&(*D));
+}
+
+void separaPalavras(dAux **D,char linha[])
+{
+	char pala[20];
+	int i=0,j;
+	while(linha[i] != '\n')
+	{
+		if(linha[i]!=' '&&linha[i]!=';'&&linha[i]!=',')
+		{
+			j=0;
+			while(linha[i]!=' '&&linha[i]!=';'&&linha[i]!=',')
+			{
+				pala[j]= linha[i];
+				i++;
+				j++;
+				printf("aqui\n");
+			}
+			pala[j]='\0';
+			inserePalavra(&(*D),pala);
+			i--;
+		}
+		i++;
+	}
+	printf("fora\n");
+}
+
 void iniciarBanco(tpBD **BD,char str[])
 {
+	dAux *d = (dAux*) malloc(sizeof(dAux));
 	*BD = (tpBD*) malloc(sizeof(tpBD));
-	int i=0,j;
-	char bd[20];
-	for(j=0;j<2;i++)
-		if(str[i]==' ')
-			j++;
-	for(j=0;str[i]!=';';i++,j++)
-		bd[j] = str[i];
-	bd[j] = '\0';
-	strcpy((*BD)->bdName,bd);
+	inicializa(&d);
+	separaPalavras(&d,str);
+	strcpy((*BD)->bdName,d->final->palavra);
+	excluirDesc(&d);
+	free(d);
 	(*BD)->tabs = NULL;
 }
 

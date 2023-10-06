@@ -55,9 +55,11 @@
 int main()
 {
 	int i;
-	char tab[20];
-	FILE *ptr = fopen("arquivoBDleitura.txt","r");
+	char tab[50];
+	FILE *ptr = fopen("scriptdboficina.txt","r");
 	tpBD *banco;
+	iniciarBanco(&banco,fgets(tab,50,ptr));
+	printf("\nNome do banco: %s",banco->bdName);
 	//executaSqlEstrutural(&banco,ptr);
 	//printf("\n%s",banco->tabs->tabName);
 }
