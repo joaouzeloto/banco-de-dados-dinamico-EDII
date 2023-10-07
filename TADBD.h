@@ -46,7 +46,7 @@ typedef struct tpBanco tpBD;
 struct tpAuxiliar
 {
 	char palavra[20];
-	struct tpAuxiliar *prox;
+	struct tpAuxiliar *prox,*ant;
 };
 typedef struct tpAuxiliar tpAux;
 
@@ -70,14 +70,16 @@ void inserePalavra(dAux **aux,char palavra[])
 {
 	tpAux *novo = (tpAux*) malloc(sizeof(tpAux));
 	strcpy(novo->palavra,palavra);
+	novo->prox = NULL;
 	if((*aux)->inicio==NULL)
 	{
-		novo->prox = NULL;
+		novo->ant = NULL;
 		(*aux)->inicio = (*aux)->final =novo;
 	}
 	else
 	{
-		novo->prox = (*aux)->final;
+		novo->ant = (*aux)->final;
+		(*aux)->final->prox = novo;
 		(*aux)->final = novo;
 	}
 }
@@ -108,7 +110,6 @@ void separaPalavras(dAux **D,char linha[])
 				pala[j]= linha[i];
 				i++;
 				j++;
-				printf("aqui\n");
 			}
 			pala[j]='\0';
 			inserePalavra(&(*D),pala);
@@ -116,7 +117,6 @@ void separaPalavras(dAux **D,char linha[])
 		}
 		i++;
 	}
-	printf("fora\n");
 }
 
 void iniciarBanco(tpBD **BD,char str[])
@@ -133,9 +133,11 @@ void iniciarBanco(tpBD **BD,char str[])
 
 void criarTabela(tpBD **BD,char tab[])
 {
-	
+	dAux *d = (dAux*) malloc(sizeof(dAux));
 	tpTabela *nova = (tpTabela*) malloc(sizeof(tpTabela)),*aux;
-	strcpy(nova->tabName,tab);
+	inicializa(&d);
+	separaPalavras(&d,tab);
+	strcpy(nova->tabName,d->final->ant->palavra);
 	nova->prox = NULL;
 	nova->campos = NULL;
 	if((*BD)->tabs==NULL)
@@ -157,14 +159,12 @@ void criarCaixaCamp(char str[],tpCampos **camp)
 {
 	int i=0,j;
 	char aux[20];
-	for(j=0;str[i]!=' ';j++,i++)
-		(*camp)->Campo[j] = str[i];
-	(*camp)->Campo[j]= '\0';
-	i++;
-	for(j=0;str[i]!=' ';j++,i++)
-			aux[j] = str[i];
-	aux[j] = '\0';
-	if(strcmp(aux,"INTERGER")==0)
+	dAux *d = (dAux*) malloc(sizeof(dAux));
+	inicializa(&d);
+	separaPalavras(&d,str);
+	strcpy((*camp)->Campo,d->inicio->palavra);
+	strcpy(aux,d->inicio->prox->palavra);
+	if(strcmp(aux,"INTEGER")==0)
 		(*camp)->Tipo ='I';
 	else
 		if(strcmp(aux,"CHARACTER(20)")==0)
