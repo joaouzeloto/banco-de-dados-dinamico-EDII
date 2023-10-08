@@ -56,8 +56,6 @@ struct descAux
 };
 typedef struct descAux dAux;
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modularização
 
@@ -102,10 +100,33 @@ void separaPalavras(dAux **D,char linha[])
 	int i=0,j;
 	while(linha[i] != '\n')
 	{
-		if(linha[i]!=' '&&linha[i]!=';'&&linha[i]!=',')
+		if(linha[i]!=' '&&linha[i]!=';'&&linha[i]!=','&&linha[i]!='\n')
 		{
 			j=0;
-			while(linha[i]!=' '&&linha[i]!=';'&&linha[i]!=',')
+			while(linha[i]!=' '&&linha[i]!=';'&&linha[i]!=','&&linha[i]!='\n')
+			{
+				pala[j]= linha[i];
+				i++;
+				j++;
+			}
+			pala[j]='\0';
+			inserePalavra(&(*D),pala);
+			i--;
+		}
+		i++;
+	}
+}
+
+void separaPalavras2(dAux **D,char linha[])
+{
+	char pala[20];
+	int i=0,j;
+	while(linha[i] != '\n')
+	{
+		if(linha[i]!=' '&&linha[i]!=';'&&linha[i]!=','&&linha[i]!='\n'&&linha[i]!='('&&linha[i]!=')')
+		{
+			j=0;
+			while(linha[i]!=' '&&linha[i]!=';'&&linha[i]!=','&&linha[i]!='\n'&&linha[i]!='('&&linha[i]!=')')
 			{
 				pala[j]= linha[i];
 				i++;
@@ -173,7 +194,7 @@ void criarCaixaCamp(char str[],tpCampos **camp)
 			if(strcmp(aux,"DATE")==0)
 				(*camp)->Tipo ='D';
 			else
-				if(strcmp(aux,"NUMERIC")==0)
+				if(strcmp(aux,"NUMERIC(6,2)")==0)
 					(*camp)->Tipo ='N';
 				else
 					if(strcmp(aux,"CHARACTER(1)")==0)
@@ -231,53 +252,39 @@ void adicionaPK(tpBD **BD,char str[],char nomeT[20])
 	}
 }
 
-void adicionaFK(tpBD **BD,char str[])
+void adicionaFK(tpBD **BD,char str[],FILE *ptr)
 {
-	int i=0,j;
-	tpTabela *ende,*ori,*aux=(*BD)->tabs; 
-	tpCampos *auxCamp,*auxAcha;
+	char linha2[100];
 	char tab[20],fk[20],tabO[20];
-	for(j=0;j<2;i++)
-		if(str[i]==' ')
-			j++;
-	for(j=0;str[i]!=' ';i++,j++)
-		tab[j] = str[i];
-	tab[j]='\0';
-	for(;str[i]!='(';)
-		i++;
-	i++;
-	for(j=0;str[i]!=')';i++,j++)
-		fk[j] = str[i];
-	fk[j]='\0';
-	for(j=0;j<2;i++)
-		if(str[i]==' ')
-			j++;
-	for(j=0;str[i]!=' ';i++,j++)
-		tabO[j] = str[i];
-	tabO[j]='\0';
-	while(aux!=NULL&&strcmp(aux->tabName,tab)!=0)
+	dAux *d = (dAux*) malloc(sizeof(dAux)),*d2 = (dAux*) malloc(sizeof(dAux));
+	tpTabela *ende,*ori,*aux=(*BD)->tabs; 
+	tpCampos *auxCamp, *auxDest;
+	inicializa(&d);
+	separaPalavras(&d,str);
+	fgets(linha2,100,ptr);
+	inicializa(&d2);
+	separaPalavras2(&d2,linha2);
+	strcpy(tab,d->inicio->prox->prox->palavra);
+	strcpy(tabO,d2->inicio->prox->prox->prox->prox->palavra);
+	strcpy(fk,d2->final->palavra);
+	while(strcmp(aux->tabName,tab)!=0)
 		aux = aux->prox;
 	if(aux!=NULL)
-	{
 		ende = aux;
-		aux=(*BD)->tabs;
-		while(aux!=NULL&&strcmp(aux->tabName,tabO)!=0)
-			aux = aux->prox;
-		if(aux!=NULL)
-		{
-			ori = aux;
-			auxCamp = ori->campos;
-			while(auxCamp!=NULL&&strcmp(auxCamp->Campo,fk)!=0)
-				auxCamp = auxCamp->prox;
-		
-			if(auxCamp!=NULL)
-			{
-				auxAcha = ende->campos;
-				while(auxAcha!=NULL&&strcmp(auxAcha->Campo,fk)!=0)
-					auxAcha = auxCamp->prox;
-				if(auxAcha!=NULL)
-					auxAcha->FK = auxCamp;
-			}	
-		}
+	aux=(*BD)->tabs;
+	while(strcmp(aux->tabName,tabO)!=0)
+		aux = aux->prox;
+	if(aux!=NULL)
+		ori = aux;
+	auxCamp = ori->campos;
+	while(strcmp(auxCamp->Campo,fk)!=0)
+		auxCamp = auxCamp->prox;
+	if(auxCamp!=NULL)
+	{
+		auxDest = ende->campos;
+		while(strcmp(auxDest->Campo,fk)!=0)
+			auxDest = auxDest->prox;
+		if(auxDest!=NULL)
+			auxDest->FK = auxCamp;
 	}
 }
