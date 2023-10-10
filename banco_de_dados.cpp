@@ -88,6 +88,9 @@ void executaComandosSql(tpBD **BD,FILE *ptr)
 				else
 					if(strcmp(auxP1,"SELECT")==0)
 						select(*BD,linha);
+					else
+						if(strcmp(auxP1,"DELETE")==0)
+							deleteI(&(*BD),linha);
 		}
 		fgets(linha,250,ptr);
 		excluirDesc(&d);
@@ -118,6 +121,9 @@ void digitarComand(tpBD **BD,char linha[])
 				else
 					if(strcmp(auxP1,"SELECT")==0)
 						select(*BD,linha);
+					else
+						if(strcmp(auxP1,"DELETE")==0)
+							deleteI(&(*BD),linha);
 		}
 }
 

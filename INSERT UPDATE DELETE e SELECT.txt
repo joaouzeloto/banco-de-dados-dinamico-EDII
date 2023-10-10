@@ -82,3 +82,6 @@ SELECT * FROM servico, os_peca;
 SELECT id_peca, descricao, valor FROM peca;
 
 SELECT id_servico, descricao FROM servico;
+
+DELETE FROM veiculo WHERE id_veiculo = 2;
+
