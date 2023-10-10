@@ -66,5 +66,8 @@ int main()
 	tpTabela *aux;
 	tpCamposTab *auxT;
 	executaSqlEstrutural(&banco,ptr);
+	insert(&banco,"INSERT INTO veiculo (id_veiculo, marca, modelo, dono, placa, combustivel, ano, chassi) values (1, 'Volkswagen', 'Gol', 'Jose_da_Silva', 'ABC-1234', 'G', 2010, 'AXB1234T789');\n");
+	printf("\nInsert feito");
+	printf("\n%s",banco->tabs->campos->prox->prox->prox->prox->prox->prox->prox->no->head->dados.valorT);
 	fclose(ptr);
 }

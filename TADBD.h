@@ -319,90 +319,95 @@ int stringToInt(const char *str) {
     return result;
 }
 
-void criaCaixaInt(int result,ListCps **nc,tpCampos **auxCamp)
+void criaCaixaInt(int result,tpCampos **auxCamp)
 {
+	ListCps *nc = (ListCps*) malloc(sizeof(ListCps));
 	tpValores *novo = (tpValores*) malloc(sizeof(tpValores)),*novo2 = (tpValores*) malloc(sizeof(tpValores));
 	novo->dados.intT = result;
 	novo->tp = 'I';
-	(*nc)->head = novo;
-	(*nc)->tail = NULL;
+	nc->head = novo;
+	nc->tail = NULL;
 	if((*auxCamp)->no==NULL)
 	{
-		(*auxCamp)->no = *nc;	
-		(*auxCamp)->pAtual = *nc;
+		printf("\nlugar certo");
+		(*auxCamp)->no = nc;	
+		(*auxCamp)->pAtual = nc;
 	}
 	else
 	{
 		novo2->tp = 'E';
-		novo2->dados.next = *nc;
+		novo2->dados.next = nc;
 		(*auxCamp)->pAtual->tail = novo2;
-		(*auxCamp)->pAtual = *nc;
+		(*auxCamp)->pAtual = nc;
 	}
 	
 }
 
-void criaCaixaString(char result[],ListCps **nc,tpCampos **auxCamp)
+void criaCaixaString(char result[],tpCampos **auxCamp)
 {
+	ListCps *nc = (ListCps*) malloc(sizeof(ListCps));
 	tpValores *novo = (tpValores*) malloc(sizeof(tpValores)),*novo2 = (tpValores*) malloc(sizeof(tpValores));
 	strcpy(novo->dados.valorT,result);
 	novo->tp = 'T';
-	(*nc)->head = novo;
-	(*nc)->tail = NULL;
+	nc->head = novo;
+	nc->tail = NULL;
 	if((*auxCamp)->no==NULL)
 	{
-		(*auxCamp)->no = *nc;	
-		(*auxCamp)->pAtual = *nc;
+		(*auxCamp)->no = nc;	
+		(*auxCamp)->pAtual = nc;
 	}
 	else
 	{
 		novo2->tp = 'E';
-		novo2->dados.next = *nc;
+		novo2->dados.next = nc;
 		(*auxCamp)->pAtual->tail = novo2;
-		(*auxCamp)->pAtual = *nc;
+		(*auxCamp)->pAtual = nc;
 	}
 	
 }
 
-void criaCaixaChar(char result,ListCps **nc,tpCampos **auxCamp)
+void criaCaixaChar(char result,tpCampos **auxCamp)
 {
+	ListCps *nc = (ListCps*) malloc(sizeof(ListCps));
 	tpValores *novo = (tpValores*) malloc(sizeof(tpValores)),*novo2 = (tpValores*) malloc(sizeof(tpValores));
 	novo->dados.valorC = result;
 	novo->tp = 'C';
-	(*nc)->head = novo;
-	(*nc)->tail = NULL;
+	nc->head = novo;
+	nc->tail = NULL;
 	if((*auxCamp)->no==NULL)
 	{
-		(*auxCamp)->no = *nc;	
-		(*auxCamp)->pAtual = *nc;
+		(*auxCamp)->no = nc;	
+		(*auxCamp)->pAtual = nc;
 	}
 	else
 	{
 		novo2->tp = 'E';
-		novo2->dados.next = *nc;
+		novo2->dados.next = nc;
 		(*auxCamp)->pAtual->tail = novo2;
-		(*auxCamp)->pAtual = *nc;
+		(*auxCamp)->pAtual = nc;
 	}
 	
 }
 
-void criaCaixaData(char result[],ListCps **nc,tpCampos **auxCamp)
+void criaCaixaData(char result[],tpCampos **auxCamp)
 {
+	ListCps *nc = (ListCps*) malloc(sizeof(ListCps));
 	tpValores *novo = (tpValores*) malloc(sizeof(tpValores)),*novo2 = (tpValores*) malloc(sizeof(tpValores));
 	strcpy(novo->dados.data,result);
 	novo->tp = 'D';
-	(*nc)->head = novo;
-	(*nc)->tail = NULL;
+	nc->head = novo;
+	nc->tail = NULL;
 	if((*auxCamp)->no==NULL)
 	{
-		(*auxCamp)->no = *nc;	
-		(*auxCamp)->pAtual = *nc;
+		(*auxCamp)->no = nc;	
+		(*auxCamp)->pAtual = nc;
 	}
 	else
 	{
 		novo2->tp = 'E';
-		novo2->dados.next = *nc;
+		novo2->dados.next = nc;
 		(*auxCamp)->pAtual->tail = novo2;
-		(*auxCamp)->pAtual = *nc;
+		(*auxCamp)->pAtual = nc;
 	}
 }
 float stringToFloat(const char *str) {
@@ -434,24 +439,25 @@ float stringToFloat(const char *str) {
     return result;
 }
 
-void criaCaixaFloat(float result,ListCps **nc,tpCampos **auxCamp)
+void criaCaixaFloat(float result,tpCampos **auxCamp)
 {
+	ListCps *nc = (ListCps*) malloc(sizeof(ListCps));
 	tpValores *novo = (tpValores*) malloc(sizeof(tpValores)),*novo2 = (tpValores*) malloc(sizeof(tpValores));
 	novo->dados.floatT = result;
 	novo->tp = 'D';
-	(*nc)->head = novo;
-	(*nc)->tail = NULL;
+	nc->head = novo;
+	nc->tail = NULL;
 	if((*auxCamp)->no==NULL)
 	{
-		(*auxCamp)->no = *nc;	
-		(*auxCamp)->pAtual = *nc;
+		(*auxCamp)->no = nc;	
+		(*auxCamp)->pAtual = nc;
 	}
 	else
 	{
 		novo2->tp = 'E';
-		novo2->dados.next = *nc;
+		novo2->dados.next = nc;
 		(*auxCamp)->pAtual->tail = novo2;
-		(*auxCamp)->pAtual = *nc;
+		(*auxCamp)->pAtual = nc;
 	}
 }
 
@@ -469,39 +475,44 @@ void insert(tpBD **BD,char linha[])
 	inicializa(&d);
 	separaPalavras2(&d,linha);
 	strcpy(tabNome,d->inicio->prox->prox->palavra);
-	while(strcmp(tabAux->tabName,tabNome)==0)
+	while(strcmp(tabAux->tabName,tabNome)!=0)
 		tabAux = tabAux->prox;
 	if(tabAux!=NULL)
 	{
 		perco = d->inicio;
 		while(strcmp(perco->palavra,"values")!=0)
 			perco = perco ->prox;
+		printf("\n%s",perco->palavra);
 		if(perco!=NULL)
 		{
 			perco = perco->prox;
 			auxCamp = tabAux->campos;
 			while(auxCamp!=NULL)
 			{
+				printf("\n%s",perco->palavra);
 				switch(auxCamp->Tipo)
 				{
 					case 'I':
 						valor = stringToInt(perco->palavra);
-						criaCaixaInt(valor,&nova,&auxCamp);
+						criaCaixaInt(valor,&auxCamp);
+						printf("\n%s",auxCamp->Campo);
+						printf("\n%d",auxCamp->no->head->dados.intT);
 						break;
 					case 'T':
-						criaCaixaString(perco->palavra,&nova,&auxCamp);
+						criaCaixaString(perco->palavra,&auxCamp);
 						break;
 					case 'C':
-						criaCaixaChar(perco->palavra[0],&nova,&auxCamp);
+						criaCaixaChar(perco->palavra[0],&auxCamp);
 						break;
 					case 'D':
-						criaCaixaData(perco->palavra,&nova,&auxCamp);
+						criaCaixaData(perco->palavra,&auxCamp);
 						break;
 					case 'F':
 						auxFloat = stringToFloat(perco->palavra);
-						criaCaixaFloat(auxFloat,&nova,&auxCamp);
+						criaCaixaFloat(auxFloat,&auxCamp);
 						break;						
 				}
+				auxCamp = auxCamp->prox;
 				perco = perco->prox;
 			}
 		}

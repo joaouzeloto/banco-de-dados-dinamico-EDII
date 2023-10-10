@@ -6,12 +6,10 @@
 float stringToFloat(const char *str) {
     float result = 0.0;
     int decimalFound = 0;
-    int sign = 1; // Para lidar com números negativos
-
-    // Verificar se o número é negativo
+    int sign = 1; 
     if (*str == '-') {
         sign = -1;
-        str++; // Avançar para o próximo caractere
+        str++; 
     }
 
     while (*str) {
@@ -23,11 +21,9 @@ float stringToFloat(const char *str) {
         } else if (*str == '.') {
             decimalFound = 1;
         } else {
-            // Caractere inválido
-            printf("Erro: Caractere inválido '%c' encontrado na string.\n", *str);
             return 0.0;
         }
-        str++; // Avançar para o próximo caractere
+        str++; 
     }
 
     result /= decimalFound;
