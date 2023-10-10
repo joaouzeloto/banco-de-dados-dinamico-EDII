@@ -329,7 +329,7 @@ void criaCaixaInt(int result,tpCampos **auxCamp)
 	nc->tail = NULL;
 	if((*auxCamp)->no==NULL)
 	{
-		printf("\nlugar certo");
+		//printf("\nlugar certo");
 		(*auxCamp)->no = nc;	
 		(*auxCamp)->pAtual = nc;
 	}
@@ -464,9 +464,7 @@ void criaCaixaFloat(float result,tpCampos **auxCamp)
 void insert(tpBD **BD,char linha[])
 {
 	float auxFloat;
-	ListCps *nova = (ListCps*) malloc(sizeof(ListCps));
 	int valor;
-	char vet[10];
 	char tabNome[20],auxP[20];
 	tpTabela *tabAux = (*BD)->tabs;
 	tpCampos *auxCamp;
@@ -482,21 +480,21 @@ void insert(tpBD **BD,char linha[])
 		perco = d->inicio;
 		while(strcmp(perco->palavra,"values")!=0)
 			perco = perco ->prox;
-		printf("\n%s",perco->palavra);
+		//printf("\n%s",perco->palavra);
 		if(perco!=NULL)
 		{
 			perco = perco->prox;
 			auxCamp = tabAux->campos;
 			while(auxCamp!=NULL)
 			{
-				printf("\n%s",perco->palavra);
+				//printf("\n%s",perco->palavra);
 				switch(auxCamp->Tipo)
 				{
 					case 'I':
 						valor = stringToInt(perco->palavra);
 						criaCaixaInt(valor,&auxCamp);
-						printf("\n%s",auxCamp->Campo);
-						printf("\n%d",auxCamp->no->head->dados.intT);
+						//printf("\n%s",auxCamp->Campo);
+						//printf("\n%d",auxCamp->no->head->dados.intT);
 						break;
 					case 'T':
 						criaCaixaString(perco->palavra,&auxCamp);
@@ -516,5 +514,129 @@ void insert(tpBD **BD,char linha[])
 				perco = perco->prox;
 			}
 		}
+	}
+}
+
+void update(tpBD **BD,char linha[])
+{//UPDATE peca SET estoque = 0 WHERE id_peca = 8;
+	tpTabela *aux = (*BD)->tabs;
+	ListCps *list;
+	tpCampos *auxCamp1,*auxCamp2;
+	char tab[20],ind[20],muda[20];
+	int compare,cont=0,nvoV;
+	dAux *d = (dAux*) malloc(sizeof(dAux));
+	inicializa(&d);
+	separaPalavras(&d,linha);
+	strcpy(tab,d->inicio->prox->palavra);
+	while(aux!=NULL&&strcmp(aux->tabName,tab)!=0)
+		aux = aux->prox;
+	if(aux!=NULL)
+	{
+		auxCamp1 = aux->campos;
+		strcpy(ind,d->final->ant->ant->palavra);
+		while(auxCamp1!=NULL&&strcmp(auxCamp1->Campo,ind)!=0)
+			auxCamp1 = auxCamp1 ->prox;
+		if(auxCamp1!=NULL)
+		{
+				auxCamp2 = aux->campos;
+				strcpy(muda,d->inicio->prox->prox->prox->palavra);
+				while(auxCamp2!=NULL&&strcmp(auxCamp2->Campo,ind)!=0)
+					auxCamp2 = auxCamp2 ->prox;
+				if(auxCamp2!=NULL)
+				{
+					compare = stringToInt(d->final->palavra);
+					list = auxCamp1->no;
+					while(list!=NULL && list->head->dados.intT!=compare)
+					{
+						cont++;
+						list = list->tail->dados.next;
+					}
+	
+					if(list!=NULL)
+					{
+						nvoV = stringToInt(d->inicio->prox->prox->prox->prox->prox->palavra);
+						list = auxCamp2->no;
+						for(;cont>0;cont--)
+							list = list->tail->dados.next;
+						//printf("\n%d",list->head->dados.intT);
+						list->head->dados.intT = nvoV;
+						//printf("\n%d",list->head->dados.intT);
+					}
+						
+				}
+		}	
+	}
+}
+
+void exibeTab(tpBD *BD,char pala[])
+{
+	tpTabela *aux = BD->tabs;
+	tpCampos *auxCamp;
+	ListCps *list;
+	char stop;
+	while(aux!=NULL&&strcmp(aux->tabName,pala)==0)
+		aux = aux->prox;
+	if(aux!=NULL)
+	{
+		printf("\nTABELA: %s", pala);
+		auxCamp = aux->campos;
+		while(auxCamp!=NULL)
+		{
+			printf("\n%s",auxCamp->Campo);
+			list = auxCamp->no;
+			while(list!=NULL)
+			{
+				switch(list->head->tp)
+				{
+					case 'I': 
+						printf("\n%d",list->head->dados.intT);
+						break;
+					case 'T': 
+						printf("\n%s",list->head->dados.valorT);
+						break;
+					case 'D': 
+						printf("\n%s",list->head->dados.data);
+						break;
+					case 'N': 
+						printf("\n%f",list->head->dados.floatT);
+						break;
+					case 'C':
+						printf("\n%c",list->head->dados.valorC);
+						break;
+				}
+				if(list->tail!=NULL)
+					list = list->tail->dados.next;
+				else
+					list = NULL;
+			}
+			auxCamp = auxCamp->prox;
+		}
+	}
+}
+
+void selectTudo(tpBD *BD,char linha[])
+{
+	char auxPala[20];
+	dAux *d = (dAux*) malloc(sizeof(dAux));
+	tpAux *perc;
+	inicializa(&d);
+	separaPalavras(&d,linha);
+	perc = d->inicio->prox->prox->prox;
+	strcpy(auxPala,perc->palavra);
+	while(perc!=NULL)
+	{
+		exibeTab(BD,auxPala);
+		perc = perc->prox;
+	}
+}
+
+void select(tpBD *BD,char linha[])
+{
+	dAux *d = (dAux*) malloc(sizeof(dAux));
+	inicializa(&d);
+	separaPalavras(&d,linha);
+	if(d->inicio->prox->palavra[0]=='*')
+	{
+		selectTudo(BD,linha);
 	}
 }

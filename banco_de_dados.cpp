@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
+#include<windows.h>
 #include"TADBD.h"
 
 void executaSqlEstrutural(tpBD **BD,FILE *ptr)
@@ -59,15 +60,45 @@ void executaSqlEstrutural(tpBD **BD,FILE *ptr)
 	printf("\nSQL ESTRUTURAL FEITO!!");
 }
 
+void executaComandosSql(tpBD **BD,FILE *ptr)
+{
+	char linha[250],auxP1[20],auxP2[20],auxP3[20],tabAux[20];
+	dAux *d = (dAux*) malloc(sizeof(dAux));
+	inicializa(&d);
+	fgets(linha,250,ptr);
+	separaPalavras(&d,linha);
+	while(!feof(ptr))
+	{
+		if(d->inicio!=NULL)
+		{
+			strcpy(auxP1,d->inicio->palavra);
+			if(strcmp(auxP1,"INSERT")==0)
+					insert(&(*BD),linha);
+			else
+				if(strcmp(auxP1,"UPDATE")==0)
+					update(&(*BD),linha);
+				else
+					if(strcmp(auxP1,"SELECT")==0)
+						select(*BD,linha);
+		}
+		fgets(linha,250,ptr);
+		excluirDesc(&d);
+		separaPalavras(&d,linha);
+	}
+	printf("\nSQL DE COMANDO FEITO!!");
+}
+
 int main()
 {
 	FILE *ptr = fopen("scriptdboficina.txt","r");
+	FILE *ptr2 = fopen("INSERT UPDATE DELETE e SELECT.txt","r");
 	tpBD *banco;
 	tpTabela *aux;
-	tpCamposTab *auxT;
+	ListCps *list;
+	tpCampos *camps;
 	executaSqlEstrutural(&banco,ptr);
-	insert(&banco,"INSERT INTO veiculo (id_veiculo, marca, modelo, dono, placa, combustivel, ano, chassi) values (1, 'Volkswagen', 'Gol', 'Jose_da_Silva', 'ABC-1234', 'G', 2010, 'AXB1234T789');\n");
-	printf("\nInsert feito");
-	printf("\n%s",banco->tabs->campos->prox->prox->prox->prox->prox->prox->prox->no->head->dados.valorT);
+	executaComandosSql(&banco,ptr2);
 	fclose(ptr);
+	fclose(ptr2);
+	
 }
