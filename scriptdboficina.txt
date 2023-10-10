@@ -20,21 +20,21 @@ CREATE TABLE ordem_servico (
     hora_entrada CHARACTER(20) ,
     data_saida DATE ,
     hora_saida CHARACTER(20) ,
-    valor_total NUMERIC(6,2) ,
+    valor_total NUMERIC(6.2) ,
     CONSTRAINT PK_ordem_servico PRIMARY KEY (id_os)
 );
 
 CREATE TABLE os_servico (
     id_os INTEGER   NOT NULL,
     id_servico INTEGER   NOT NULL,
-    valor NUMERIC(6,2) ,
+    valor NUMERIC(6.2) ,
     CONSTRAINT PK_os_servico PRIMARY KEY (id_os, id_servico)
 );
 
 CREATE TABLE servico (
     id_servico INTEGER   NOT NULL,
     descricao CHARACTER(20) ,
-    valor NUMERIC(6,2) ,
+    valor NUMERIC(6.2) ,
     CONSTRAINT PK_servico PRIMARY KEY (id_servico)
 );
 
@@ -42,14 +42,14 @@ CREATE TABLE os_peca (
     id_os INTEGER   NOT NULL,
     id_peca INTEGER   NOT NULL,
     quantidade INTEGER ,
-    valor NUMERIC(6,2) ,
+    valor NUMERIC(6.2) ,
     CONSTRAINT PK_os_peca PRIMARY KEY (id_os, id_peca)
 );
 
 CREATE TABLE peca (
     id_peca INTEGER   NOT NULL,
     descricao CHARACTER(20) ,
-    valor NUMERIC(6,2) ,
+    valor NUMERIC(6.2) ,
     estoque INTEGER ,
     CONSTRAINT PK_peca PRIMARY KEY (id_peca)
 );

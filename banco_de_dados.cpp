@@ -106,7 +106,7 @@ void digitarComand(tpBD **BD,char linha[])
 		char auxP1[20];
 		dAux *d = (dAux*) malloc(sizeof(dAux));
 		inicializa(&d);
-		separaPalavras(&d,linha);
+		separaPalavras3(&d,linha);
 		if(d->inicio!=NULL)
 		{
 			strcpy(auxP1,d->inicio->palavra);
@@ -170,6 +170,12 @@ void executar(void)
 			case'C':
 				if(bancoAtivo==1)
 				{
+					clrscr();
+					Moldura(1,1,120,30,3);
+					Moldura(40,7,78,18,7);
+					gotoxy(45,12);
+					printf("DIGITE O COMANDO: ");
+					gotoxy(45,15);
 					fflush(stdin);
 					gets(lin);
 					if(strcmp(lin,"")!=0)

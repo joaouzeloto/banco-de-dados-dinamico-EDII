@@ -76,3 +76,9 @@ SELECT * FROM veiculo;
 SELECT * FROM peca;
 
 SELECT * FROM ordem_servico;
+
+SELECT * FROM servico, os_peca;
+
+SELECT id_peca, descricao, valor FROM peca;
+
+SELECT id_servico, descricao FROM servico;

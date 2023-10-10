@@ -176,6 +176,29 @@ void separaPalavras2(dAux **D,char linha[])
 	}
 }
 
+void separaPalavras3(dAux **D,char linha[])
+{
+	char pala[20];
+	int i=0,j;
+	while(linha[i] != '\0'&&linha[i] != '\n')
+	{
+		if(linha[i]!=' '&&linha[i]!=';'&&linha[i]!=','&&linha[i]!='\n'&&linha[i]!='\0')
+		{
+			j=0;
+			while(linha[i]!=' '&&linha[i]!=';'&&linha[i]!=','&&linha[i]!='\n'&&linha[i]!='\0')
+			{
+				pala[j]= linha[i];
+				i++;
+				j++;
+			}
+			pala[j]='\0';
+			inserePalavra(&(*D),pala);
+			i--;
+		}
+		i++;
+	}
+}
+
 void iniciarBanco(tpBD **BD,char str[])
 {
 	dAux *d = (dAux*) malloc(sizeof(dAux));
@@ -230,7 +253,7 @@ void criarCaixaCamp(char str[],tpCampos **camp)
 			if(strcmp(aux,"DATE")==0)
 				(*camp)->Tipo ='D';
 			else
-				if(strcmp(aux,"NUMERIC(6,2)")==0)
+				if(strcmp(aux,"NUMERIC(6.2)")==0)
 					(*camp)->Tipo ='N';
 				else
 					if(strcmp(aux,"CHARACTER(1)")==0)
@@ -473,7 +496,7 @@ void criaCaixaFloat(float result,tpCampos **auxCamp)
 	ListCps *nc = (ListCps*) malloc(sizeof(ListCps));
 	tpValores *novo = (tpValores*) malloc(sizeof(tpValores)),*novo2 = (tpValores*) malloc(sizeof(tpValores));
 	novo->dados.floatT = result;
-	novo->tp = 'D';
+	novo->tp = 'N';
 	nc->head = novo;
 	nc->tail = NULL;
 	if((*auxCamp)->no==NULL)
@@ -534,7 +557,7 @@ void insert(tpBD **BD,char linha[])
 					case 'D':
 						criaCaixaData(perco->palavra,&auxCamp);
 						break;
-					case 'F':
+					case 'N':
 						auxFloat = stringToFloat(perco->palavra);
 						criaCaixaFloat(auxFloat,&auxCamp);
 						break;						
@@ -605,7 +628,6 @@ void exibeTab(tpBD *BD,char pala[])
 	tpCampos *auxCamp;
 	int lin,col;
 	ListCps *list;
-	char stop;
 	while(aux!=NULL&&strcmp(aux->tabName,pala)!=0)
 		aux = aux->prox;
 	if(aux!=NULL)
@@ -639,7 +661,7 @@ void exibeTab(tpBD *BD,char pala[])
 						break;
 					case 'N': 
 						gotoxy(col,lin);
-						printf("%f",list->head->dados.floatT);
+						printf("%.2f",list->head->dados.floatT);
 						break;
 					case 'C':
 						gotoxy(col,lin);
@@ -660,29 +682,160 @@ void exibeTab(tpBD *BD,char pala[])
 	getch();
 }
 
+void exibeTabBetween(tpBD *BD,int min,int max,tpAux *a,char indice[])
+{
+	char tab[20];
+	ListCps *perc,perc2;
+	tpCampos *auxCamp,*ind;
+	tpTabela *aux = BD->tabs;
+	while(strcmp(a->palavra,"FROM")!=0)
+		a = a->prox;
+	a = a->prox;
+	strcpy(tab,a->palavra);
+	while(aux!=NULL&&strcmp(aux->tabName,tab)!=0)
+		aux = aux->prox;
+	if(aux!=NULL)
+	{
+			auxCamp = aux->campos;
+			while(strcmp(auxCamp->Campo,indice)!=0)
+				auxCamp = auxCamp->prox;
+			if(auxCamp!=NULL)
+			{
+				ind =auxCamp;
+				perc = ind->no;
+				cont = 0;
+				while(perc!=NULL)
+				{
+					if(perc->head->dados.floatT>=min&&perc->head->dados.floatT<=max&&)
+					{
+						auxCamp = aux->campos;
+						
+						
+					}
+				}
+			}
+	}
+}
+
 void selectTudo(tpBD *BD,char linha[])
+{
+	char auxPala[20];
+	int min,max;
+	dAux *d = (dAux*) malloc(sizeof(dAux));
+	tpAux *perc;
+	inicializa(&d);
+	separaPalavras3(&d,linha);
+	if(strcmp(d->final->ant->palavra,"AND")==0)
+	{
+		strcpy(auxPala,d->final->ant->ant->ant->ant->palavra);
+		min = stringToInt(auxPala->final->palavra);
+		max = stringToInt(auxPala->final->ant->ant->palavra);
+		perc = d->inicio;
+		exibeTabBetween(BD,min,max,inicio,auxPala);
+	}
+	else
+	{
+		perc = d->inicio->prox->prox->prox;
+		while(perc!=NULL)
+		{
+			strcpy(auxPala,perc->palavra);
+			exibeTab(BD,auxPala);
+			perc = perc->prox;
+		}
+	}
+}
+
+void exibePartTab(tpBD *BD, char tab[],tpAux *a)
+{
+	clrscr();
+	Moldura(1,1,120,30,3);
+	tpTabela *aux = BD->tabs;
+	tpCampos *auxCamp;
+	int lin,col;
+	ListCps *list;
+	while(aux!=NULL&&strcmp(aux->tabName,tab)!=0)
+		aux = aux->prox;
+	if(aux!=NULL)
+	{
+		gotoxy(45,2);
+		printf("TABELA: %s", aux->tabName);
+		auxCamp = aux->campos;
+		lin = 4;
+		col =2;
+		while(strcmp(a->palavra,"FROM")!=0)
+		{
+			while(auxCamp!=NULL&&strcmp(auxCamp->Campo,a->palavra)!=0)
+				auxCamp = auxCamp->prox;
+			if(auxCamp!=NULL)
+			{
+				gotoxy(col,lin);
+				printf("%s",auxCamp->Campo);
+				list = auxCamp->no;
+				lin++;
+				while(list!=NULL)
+				{
+					switch(list->head->tp)
+					{
+						case 'I': 
+							gotoxy(col,lin);
+							printf("%d",list->head->dados.intT);
+							break;
+						case 'T': 
+							gotoxy(col,lin);
+							printf("%s",list->head->dados.valorT);
+							break;
+						case 'D': 
+							gotoxy(col,lin);
+							printf("%s",list->head->dados.data);
+							break;
+						case 'N': 
+							gotoxy(col,lin);
+							printf("%.2f",list->head->dados.floatT);
+							break;
+						case 'C':
+							gotoxy(col,lin);
+							printf("%c",list->head->dados.valorC);
+							break;
+					}
+					if(list->tail!=NULL)
+						list = list->tail->dados.next;
+					else
+						list = NULL;
+					lin++;
+				}
+				col = col + 15;
+				lin = 4;	
+			}
+			a = a->prox;
+			auxCamp = aux->campos;
+		}
+	}
+	getch();
+}
+
+void selectPartes(tpBD *BD,char linha[])
 {
 	char auxPala[20];
 	dAux *d = (dAux*) malloc(sizeof(dAux));
 	tpAux *perc;
 	inicializa(&d);
-	separaPalavras(&d,linha);
-	perc = d->inicio->prox->prox->prox;
-	strcpy(auxPala,perc->palavra);
-	while(perc!=NULL)
-	{
-		exibeTab(BD,auxPala);
-		perc = perc->prox;
-	}
+	separaPalavras3(&d,linha);
+	strcpy(auxPala,d->final->palavra);
+	perc = d->inicio->prox;
+	exibePartTab(BD,auxPala,perc);
 }
 
 void select(tpBD *BD,char linha[])
 {
 	dAux *d = (dAux*) malloc(sizeof(dAux));
 	inicializa(&d);
-	separaPalavras(&d,linha);
+	separaPalavras3(&d,linha);
 	if(d->inicio->prox->palavra[0]=='*')
 	{
 		selectTudo(BD,linha);
+	}
+	else
+	{
+		selectPartes(BD,linha);
 	}
 }
