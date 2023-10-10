@@ -83,5 +83,7 @@ SELECT id_peca, descricao, valor FROM peca;
 
 SELECT id_servico, descricao FROM servico;
 
+SELECT * FROM veiculo WHERE ano BETWEEN 1970 AND 2010;
+
 DELETE FROM veiculo WHERE id_veiculo = 2;
 

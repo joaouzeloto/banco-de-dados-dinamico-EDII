@@ -702,7 +702,6 @@ void exibeTabBetween(tpBD *BD,int min,int max,tpAux *a,char indice[])
 	{
 			gotoxy(45,2);
 			printf("TABELA: %s", aux->tabName);
-			getch();
 			lin = 4;
 			col =2;
 			auxCamp = aux->campos;
@@ -725,18 +724,14 @@ void exibeTabBetween(tpBD *BD,int min,int max,tpAux *a,char indice[])
 				cont = 0;
 				while(perc!=NULL)
 				{
-					cont++;
 					v = perc->head->dados.intT;
-					printf("\n%d",v);
 					if(v>=max&&v<=min)
 					{
-						printf("\nentrei");
-						getch();
 						auxCamp = aux->campos;
 						while(auxCamp!=NULL)
 						{
 							perc2 = auxCamp->no;
-							for(contL = cont;perc!=NULL&&contL>0;cont--)
+							for(contL = cont;perc!=NULL&&contL>0;contL--)
 								if(perc2->tail!=NULL)
 									perc2 = perc2->tail->dados.next;
 								else
@@ -769,17 +764,19 @@ void exibeTabBetween(tpBD *BD,int min,int max,tpAux *a,char indice[])
 							}
 							col = col + 15;
 							auxCamp = auxCamp->prox;			
-						}
+						}	
 						col=2;
 						lin++;
 					}
 					if(perc->tail!=NULL)
-						perc = perc2->tail->dados.next;
+						perc = perc->tail->dados.next;
 					else
 						perc =NULL;
+					cont++;
 				}
 			}
 	}
+	getch();
 }
 
 void selectTudo(tpBD *BD,char linha[])
