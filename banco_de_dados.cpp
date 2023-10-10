@@ -3,7 +3,10 @@
 #include<string.h>
 #include<math.h>
 #include<windows.h>
+#include<conio2.h>
 #include"TADBD.h"
+
+void Moldura(int CI,int LI,int CF,int LF,int cor);
 
 void executaSqlEstrutural(tpBD **BD,FILE *ptr)
 {
@@ -57,7 +60,12 @@ void executaSqlEstrutural(tpBD **BD,FILE *ptr)
 		excluirDesc(&d);
 		separaPalavras(&d,linha);
 	}
-	printf("\nSQL ESTRUTURAL FEITO!!");
+	clrscr();
+	Moldura(1,1,120,30,3);
+	Moldura(40,7,78,18,7);
+	gotoxy(48,12);
+	printf("SQL ESTRUTURAL FEITO!!");
+	getch();
 }
 
 void executaComandosSql(tpBD **BD,FILE *ptr)
@@ -85,20 +93,70 @@ void executaComandosSql(tpBD **BD,FILE *ptr)
 		excluirDesc(&d);
 		separaPalavras(&d,linha);
 	}
-	printf("\nSQL DE COMANDO FEITO!!");
+	clrscr();
+	Moldura(1,1,120,30,3);
+	Moldura(40,7,78,18,7);
+	gotoxy(48,12);
+	printf("SQL DE COMANDO FEITO!!");
+	getch();
+}
+
+char menu(void)
+{
+	clrscr();
+	Moldura(1,1,120,30,3);
+	Moldura(40,7,78,18,7);
+	gotoxy(45,10);
+	printf("[A] CRIAR ESTRUTURAS");
+	gotoxy(45,11);
+	printf("[B] LER COMANDOS SQL");
+	gotoxy(45,12);
+	printf("[C] DIGITAR COMANDOS SQL");
+	gotoxy(45,13);
+	printf("[ESC] SAIR");
+	gotoxy(45,15);
+	printf("ESCOLHA: ");
+	return toupper(getch());
+}
+
+void executar(void)
+{
+	char op;
+	int bancoAtivo=0,comandosAti=0;
+	FILE *ptr = fopen("scriptdboficina.txt","r");
+	FILE *ptr2 = fopen("INSERT UPDATE DELETE e SELECT.txt","r");
+	tpBD *banco;
+	op = menu();
+	while(op!=27)
+	{
+		switch(op)
+		{
+			case'A':
+				if(bancoAtivo==0)
+				{
+					executaSqlEstrutural(&banco,ptr);
+					bancoAtivo = 1;
+				}
+				break;
+			case'B':
+				if(comandosAti==0)
+				{
+					executaComandosSql(&banco,ptr2);
+					comandosAti = 1;	
+				}
+				break;
+			case'C':
+				//inforProc(cont);
+				break;
+		}
+		op = menu();
+	}
+	fclose(ptr);
+	fclose(ptr2);
+	
 }
 
 int main()
 {
-	FILE *ptr = fopen("scriptdboficina.txt","r");
-	FILE *ptr2 = fopen("INSERT UPDATE DELETE e SELECT.txt","r");
-	tpBD *banco;
-	tpTabela *aux;
-	ListCps *list;
-	tpCampos *camps;
-	executaSqlEstrutural(&banco,ptr);
-	executaComandosSql(&banco,ptr2);
-	fclose(ptr);
-	fclose(ptr2);
-	
+	executar();
 }

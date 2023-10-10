@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
+#include<conio2.h>
 
 float stringToFloat(const char *str) {
     float result = 0.0;
@@ -33,10 +34,8 @@ float stringToFloat(const char *str) {
 }
 
 int main() {
-    const char str[] = "474.70"; // Sua string com o valor float
-    float valor = stringToFloat(str);
-
-    printf("O valor em float : %.2f\n", valor);
-
+    
+	gotoxy(10,10);
+	printf("pos[10][10]");
     return 0;
 }

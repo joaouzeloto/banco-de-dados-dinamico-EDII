@@ -66,6 +66,35 @@ typedef struct descAux dAux;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modularização
 
+void Moldura(int CI,int LI,int CF,int LF,int cor)
+{
+	long long int i;
+	textcolor(cor);
+	gotoxy(CI,LI);
+	printf("%c",201);
+	gotoxy(CF,LI);
+	printf("%c",187);
+	gotoxy(CI,LF);
+	printf("%c",200);
+	gotoxy(CF,LF);
+	printf("%c",188);
+	for(i=CI+1;i<CF;i++)
+	{
+		gotoxy(i,LI);
+		printf("%c",205);
+		gotoxy(i,LF);
+		printf("%c",205);
+	}
+	for(i=LI+1;i<LF;i++)
+	{
+		gotoxy(CI,i);
+		printf("%c",186);
+		gotoxy(CF,i);
+		printf("%c",186);
+	}
+	textcolor(7);
+}
+
 void inicializa(dAux **D)
 {
 	(*D)->inicio = (*D)->final = NULL;
@@ -570,48 +599,65 @@ void update(tpBD **BD,char linha[])
 
 void exibeTab(tpBD *BD,char pala[])
 {
+	clrscr();
+	Moldura(1,1,120,30,3);
 	tpTabela *aux = BD->tabs;
 	tpCampos *auxCamp;
+	int lin,col;
 	ListCps *list;
 	char stop;
 	while(aux!=NULL&&strcmp(aux->tabName,pala)==0)
 		aux = aux->prox;
 	if(aux!=NULL)
 	{
-		printf("\nTABELA: %s", pala);
+		gotoxy(45,2);
+		printf("TABELA: %s", pala);
 		auxCamp = aux->campos;
+		lin = 4;
+		col =2;
 		while(auxCamp!=NULL)
 		{
-			printf("\n%s",auxCamp->Campo);
+			gotoxy(col,lin);
+			printf("%s",auxCamp->Campo);
 			list = auxCamp->no;
+			lin++;
 			while(list!=NULL)
 			{
 				switch(list->head->tp)
 				{
 					case 'I': 
-						printf("\n%d",list->head->dados.intT);
+						gotoxy(col,lin);
+						printf("%d",list->head->dados.intT);
 						break;
 					case 'T': 
-						printf("\n%s",list->head->dados.valorT);
+						gotoxy(col,lin);
+						printf("%s",list->head->dados.valorT);
 						break;
 					case 'D': 
-						printf("\n%s",list->head->dados.data);
+						gotoxy(col,lin);
+						printf("%s",list->head->dados.data);
 						break;
 					case 'N': 
-						printf("\n%f",list->head->dados.floatT);
+						gotoxy(col,lin);
+						printf("%f",list->head->dados.floatT);
 						break;
 					case 'C':
-						printf("\n%c",list->head->dados.valorC);
+						gotoxy(col,lin);
+						printf("%c",list->head->dados.valorC);
 						break;
 				}
 				if(list->tail!=NULL)
 					list = list->tail->dados.next;
 				else
 					list = NULL;
+				lin++;
 			}
+			col = col + 15;
+			lin = 4;
 			auxCamp = auxCamp->prox;
 		}
 	}
+	getch();
 }
 
 void selectTudo(tpBD *BD,char linha[])
