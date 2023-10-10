@@ -75,4 +75,4 @@ SELECT * FROM veiculo;
 
 SELECT * FROM peca;
 
-SELECT * FROM servico;
+SELECT * FROM ordem_servico;

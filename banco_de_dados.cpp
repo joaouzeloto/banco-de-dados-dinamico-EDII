@@ -101,6 +101,26 @@ void executaComandosSql(tpBD **BD,FILE *ptr)
 	getch();
 }
 
+void digitarComand(tpBD **BD,char linha[])
+{
+		char auxP1[20];
+		dAux *d = (dAux*) malloc(sizeof(dAux));
+		inicializa(&d);
+		separaPalavras(&d,linha);
+		if(d->inicio!=NULL)
+		{
+			strcpy(auxP1,d->inicio->palavra);
+			if(strcmp(auxP1,"INSERT")==0)
+					insert(&(*BD),linha);
+			else
+				if(strcmp(auxP1,"UPDATE")==0)
+					update(&(*BD),linha);
+				else
+					if(strcmp(auxP1,"SELECT")==0)
+						select(*BD,linha);
+		}
+}
+
 char menu(void)
 {
 	clrscr();
@@ -122,7 +142,8 @@ char menu(void)
 void executar(void)
 {
 	char op;
-	int bancoAtivo=0,comandosAti=0;
+	char lin[250];
+	int bancoAtivo=0,comandosAti=1;
 	FILE *ptr = fopen("scriptdboficina.txt","r");
 	FILE *ptr2 = fopen("INSERT UPDATE DELETE e SELECT.txt","r");
 	tpBD *banco;
@@ -136,6 +157,7 @@ void executar(void)
 				{
 					executaSqlEstrutural(&banco,ptr);
 					bancoAtivo = 1;
+					comandosAti=0;
 				}
 				break;
 			case'B':
@@ -146,7 +168,15 @@ void executar(void)
 				}
 				break;
 			case'C':
-				//inforProc(cont);
+				if(bancoAtivo==1)
+				{
+					fflush(stdin);
+					gets(lin);
+					if(strcmp(lin,"")!=0)
+					{
+						digitarComand(&banco,lin);
+					}
+				}
 				break;
 		}
 		op = menu();

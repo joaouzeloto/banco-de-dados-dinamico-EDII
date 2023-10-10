@@ -606,12 +606,12 @@ void exibeTab(tpBD *BD,char pala[])
 	int lin,col;
 	ListCps *list;
 	char stop;
-	while(aux!=NULL&&strcmp(aux->tabName,pala)==0)
+	while(aux!=NULL&&strcmp(aux->tabName,pala)!=0)
 		aux = aux->prox;
 	if(aux!=NULL)
 	{
 		gotoxy(45,2);
-		printf("TABELA: %s", pala);
+		printf("TABELA: %s", aux->tabName);
 		auxCamp = aux->campos;
 		lin = 4;
 		col =2;
