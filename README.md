@@ -11,21 +11,3 @@ a) Abrir um arquivo contendo o script de criação do banco de dados (exemplo mo
 b) Construir o "banco de dados", a partir do arquivo de script, que na verdade é a criação de todas as listas dinâmicas adequadas para o modelo de dados (tabelas, campos e relacionamentos). Nesse caso são utilizados os comandos de DDL;
 
 c) Permitir ao usuário executar os comandos de DML e DQL. No caso do comando SELECT, deve-se mostrar na tela do computador o resultado no formato de uma tabela.
-
-## Exemplo de Script de Criação do Banco de Dados
-
-Aqui está um exemplo de script de criação do banco de dados:
-
-```sql
--- Exemplo de criação de tabela
-CREATE TABLE Clientes (
-    ClienteID INT PRIMARY KEY,
-    Nome VARCHAR(255),
-    Email VARCHAR(255)
-);
-
--- Exemplo de adição de chave estrangeira
-ALTER TABLE Pedidos
-ADD CONSTRAINT FK_Cliente
-FOREIGN KEY (ClienteID)
-REFERENCES Clientes(ClienteID);
