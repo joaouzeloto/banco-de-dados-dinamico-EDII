@@ -11,3 +11,16 @@ a) Abrir um arquivo contendo o script de criação do banco de dados (exemplo mo
 b) Construir o "banco de dados", a partir do arquivo de script, que na verdade é a criação de todas as listas dinâmicas adequadas para o modelo de dados (tabelas, campos e relacionamentos). Nesse caso são utilizados os comandos de DDL;
 
 c) Permitir ao usuário executar os comandos de DML e DQL. No caso do comando SELECT, deve-se mostrar na tela do computador o resultado no formato de uma tabela.
+
+
+## MENU DO PROJETO
+
+<div><a><img src="menu_projeto.png"/></a></div>
+
+## COMANDO FEITO PELO USUÁRIO
+
+<div><a><img src="comando_usu.png"/></a></div>
+
+## VALORES DE UMA TABELA DO BANCO 
+
+<div><a><img src="select.png"/></a></div>
